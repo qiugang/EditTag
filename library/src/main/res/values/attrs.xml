@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <declare-styleable name="EditTag">
+        <attr name="tag_layout" format="reference"></attr>
+        <attr name="input_layout" format="reference"></attr>
+    </declare-styleable>
+</resources>
