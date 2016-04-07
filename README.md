@@ -1,9 +1,21 @@
 # EditTag
+[![](https://jitpack.io/v/qiugang/EditTag.svg)](https://jitpack.io/#qiugang/EditTag)
  Just use it to edit your tags like EditText edit your text.
 ### Demo
 <img src="/screenshots/s01.jpg" width="360" height="640" />
 ### Step 1
 
+* gradle dependencies
+
+```groovy
+
+ repositories {
+        maven { url "https://jitpack.io" }
+ }
+ dependencies {
+	    compile 'com.github.qiugang:EditTag:v1.0'
+ }
+```
 * Add EditTag View in your layout resource
 
 ```xml
