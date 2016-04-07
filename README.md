@@ -5,7 +5,7 @@
 <img src="/screenshots/s01.jpg" width="360" height="640" />
 ### Step 1
 
-* gradle dependencies
+* Add the dependency
 
 ```groovy
 
