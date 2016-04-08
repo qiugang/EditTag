@@ -71,6 +71,7 @@ public class EditTag extends FrameLayout {
                                                      R.layout.view_default_tag);
         inputTagLayoutRes = mTypedArray.getResourceId(R.styleable.EditTag_input_layout,
                                                       R.layout.view_default_input_tag);
+        mTypedArray.recycle();
         setupView();
     }
     
