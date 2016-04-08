@@ -1,6 +1,6 @@
 # EditTag
 [![](https://jitpack.io/v/qiugang/EditTag.svg)](https://jitpack.io/#qiugang/EditTag)
- Just use it to edit your tags like EditText edit your text.
+ Just use it to edit tags like EditText edit text.
 ### Demo
 <img src="/screenshots/s01.jpg" width="360" height="640" />
 ### Step 1
