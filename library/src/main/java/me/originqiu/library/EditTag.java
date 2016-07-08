@@ -95,6 +95,23 @@ public class EditTag extends FrameLayout {
             mFlowLayout.removeViewAt(mFlowLayout.getChildCount()-1);
         }
     }
+
+    // Delete any tag by long pressing it
+    // Can be changed to having an 'x' button next to each tag
+    // If author is interested in that, can implement it
+
+    private void setDeleteTagListener(TextView view) {
+
+        view.setOnLongClickListener(new OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View view) {
+                TextView tv = (TextView) view;
+                mFlowLayout.removeView(view);
+                mTagList.remove(tv.getText());
+                return true;
+            }
+        });
+    }
     
     private void setupListener() {
         mEditText.setOnEditorActionListener(new TextView.OnEditorActionListener() {
@@ -164,6 +181,7 @@ public class EditTag extends FrameLayout {
                         parent,
                         false);
         tagTv.setText(s);
+        setDeleteTagListener(tagTv);
         return tagTv;
     }
     
