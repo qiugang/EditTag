@@ -72,7 +72,9 @@ public class EditTag extends FrameLayout {
         inputTagLayoutRes = mTypedArray.getResourceId(R.styleable.EditTag_input_layout,
                                                       R.layout.view_default_input_tag);
         mTypedArray.recycle();
+
         setupView();
+
     }
     
     private void setupView() {
@@ -80,9 +82,18 @@ public class EditTag extends FrameLayout {
         LayoutParams layoutParams = new LayoutParams(LayoutParams.WRAP_CONTENT,
                                                      LayoutParams.WRAP_CONTENT);
         mFlowLayout.setLayoutParams(layoutParams);
+
         addView(mFlowLayout);
         addTagView();
         setupListener();
+
+    }
+
+
+    public void setEditable(boolean editable){
+        if(!editable && mFlowLayout.getChildCount()>0){
+            mFlowLayout.removeViewAt(mFlowLayout.getChildCount()-1);
+        }
     }
     
     private void setupListener() {
@@ -149,10 +160,9 @@ public class EditTag extends FrameLayout {
     }
     
     private TextView createTag(ViewGroup parent, String s) {
-        TextView tagTv = (TextView) LayoutInflater.from(getContext())
-                                                  .inflate(tagViewLayoutRes,
-                                                           parent,
-                                                           false);
+        TextView tagTv = (TextView) LayoutInflater.from(getContext()).inflate(tagViewLayoutRes,
+                        parent,
+                        false);
         tagTv.setText(s);
         return tagTv;
     }
@@ -172,5 +182,6 @@ public class EditTag extends FrameLayout {
     public void setTagList(List<String> mTagList) {
         this.mTagList = mTagList;
         addTagView();
+        setupListener();
     }
 }
