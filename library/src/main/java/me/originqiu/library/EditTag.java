@@ -26,6 +26,7 @@ package me.originqiu.library;
 
 import android.content.Context;
 import android.content.res.TypedArray;
+import android.graphics.drawable.ColorDrawable;
 import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.view.KeyEvent;
@@ -48,10 +49,16 @@ public class EditTag extends FrameLayout {
     private FlowLayout mFlowLayout;
     
     private EditText mEditText;
+
+    private int tagBackgroundColor;
+
+    private int tagTextColor;
     
     private int tagViewLayoutRes;
     
     private int inputTagLayoutRes;
+
+    private View.OnClickListener tagClickListener;
     
     private List<String> mTagList = new ArrayList<>();
     
@@ -75,6 +82,15 @@ public class EditTag extends FrameLayout {
 
         setupView();
 
+        TextView tagTv = (TextView) LayoutInflater.from(getContext())
+                .inflate(tagViewLayoutRes,
+                        mFlowLayout,
+                        false);
+
+        ColorDrawable cd = (ColorDrawable) tagTv.getBackground();
+        this.tagBackgroundColor = cd.getColor();
+        this.tagTextColor = tagTv.getCurrentTextColor();
+
     }
     
     private void setupView() {
@@ -95,7 +111,39 @@ public class EditTag extends FrameLayout {
             mFlowLayout.removeViewAt(mFlowLayout.getChildCount()-1);
         }
     }
-    
+
+    // Delete any tag by long pressing it
+    // Can be changed to having an 'x' button next to each tag
+    // If author is interested in that, can implement it
+
+    private void setDeleteTagListener(TextView view) {
+
+        view.setOnLongClickListener(new OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View view) {
+                TextView tv = (TextView) view;
+                mFlowLayout.removeView(view);
+                mTagList.remove(tv.getText());
+                return true;
+            }
+        });
+    }
+
+    // Set tag bg color
+    public void setTagBackgroundColor(int color){
+        tagBackgroundColor = color;
+    }
+
+    // Set tag text color
+    public void setTagTextColor(int color){
+        tagTextColor = color;
+    }
+
+    // Set tag click listener
+    public void setTagClickListener(View.OnClickListener listener){
+        tagClickListener = listener;
+    }
+
     private void setupListener() {
         mEditText.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             
@@ -164,6 +212,11 @@ public class EditTag extends FrameLayout {
                         parent,
                         false);
         tagTv.setText(s);
+        tagTv.setTextColor(tagTextColor);
+        tagTv.setBackgroundColor(tagBackgroundColor);
+        if(tagClickListener!=null)
+            tagTv.setOnClickListener(tagClickListener);
+        setDeleteTagListener(tagTv);
         return tagTv;
     }
     
