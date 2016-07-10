@@ -26,6 +26,7 @@ package me.originqiu.library;
 
 import android.content.Context;
 import android.content.res.TypedArray;
+import android.graphics.drawable.ColorDrawable;
 import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.view.KeyEvent;
@@ -48,10 +49,16 @@ public class EditTag extends FrameLayout {
     private FlowLayout mFlowLayout;
     
     private EditText mEditText;
+
+    private int tagBackgroundColor;
+
+    private int tagTextColor;
     
     private int tagViewLayoutRes;
     
     private int inputTagLayoutRes;
+
+    private View.OnClickListener tagClickListener;
     
     private List<String> mTagList = new ArrayList<>();
     
@@ -74,6 +81,15 @@ public class EditTag extends FrameLayout {
         mTypedArray.recycle();
 
         setupView();
+
+        TextView tagTv = (TextView) LayoutInflater.from(getContext())
+                .inflate(tagViewLayoutRes,
+                        mFlowLayout,
+                        false);
+
+        ColorDrawable cd = (ColorDrawable) tagTv.getBackground();
+        this.tagBackgroundColor = cd.getColor();
+        this.tagTextColor = tagTv.getCurrentTextColor();
 
     }
     
@@ -112,7 +128,22 @@ public class EditTag extends FrameLayout {
             }
         });
     }
-    
+
+    // Set tag bg color
+    public void setTagBackgroundColor(int color){
+        tagBackgroundColor = color;
+    }
+
+    // Set tag text color
+    public void setTagTextColor(int color){
+        tagTextColor = color;
+    }
+
+    // Set tag click listener
+    public void setTagClickListener(View.OnClickListener listener){
+        tagClickListener = listener;
+    }
+
     private void setupListener() {
         mEditText.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             
@@ -181,6 +212,10 @@ public class EditTag extends FrameLayout {
                         parent,
                         false);
         tagTv.setText(s);
+        tagTv.setTextColor(tagTextColor);
+        tagTv.setBackgroundColor(tagBackgroundColor);
+        if(tagClickListener!=null)
+            tagTv.setOnClickListener(tagClickListener);
         setDeleteTagListener(tagTv);
         return tagTv;
     }
