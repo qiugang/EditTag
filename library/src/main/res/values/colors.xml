@@ -2,5 +2,7 @@
 <resources>
     <color name="bg_tag">#E0E0E0</color>
     <color name="dark_clr">#333333</color>
+    <color name="colorAccent">#FF4081</color>
+
 
 </resources>

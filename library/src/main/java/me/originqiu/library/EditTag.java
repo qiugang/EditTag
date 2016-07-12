@@ -19,11 +19,9 @@ package me.originqiu.library;
 
 import android.content.Context;
 import android.content.res.TypedArray;
-import android.text.Editable;
+import android.graphics.drawable.Drawable;
 import android.text.TextUtils;
-import android.text.TextWatcher;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -32,7 +30,6 @@ import android.view.inputmethod.EditorInfo;
 import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -40,7 +37,7 @@ import java.util.List;
 /**
  * Created by OriginQiu on 4/7/16.
  */
-public class EditTag extends FrameLayout {
+public class EditTag extends FrameLayout implements View.OnClickListener {
     
     private FlowLayout mFlowLayout;
     
@@ -50,9 +47,17 @@ public class EditTag extends FrameLayout {
     
     private int inputTagLayoutRes;
     
+    private int deleteModeBgdRes;
+    
+    private Drawable tagTextViewBg;
+    
     private boolean isEditableStatus = true;
     
+    private View lastSelectTagView;
+    
     private List<String> mTagList = new ArrayList<>();
+    
+    private boolean isDelAction = false;
     
     public EditTag(Context context) {
         this(context, null);
@@ -70,10 +75,10 @@ public class EditTag extends FrameLayout {
                                                      R.layout.view_default_tag);
         inputTagLayoutRes = mTypedArray.getResourceId(R.styleable.EditTag_input_layout,
                                                       R.layout.view_default_input_tag);
+        deleteModeBgdRes = mTypedArray.getResourceId(R.styleable.EditTag_delete_mode_bg,
+                                                     R.color.colorAccent);
         mTypedArray.recycle();
-        
         setupView();
-        
     }
     
     private void setupView() {
@@ -84,21 +89,6 @@ public class EditTag extends FrameLayout {
         addView(mFlowLayout);
         addTagView();
         setupListener();
-    }
-    
-    public void setEditable(boolean editable) {
-        if (editable) {
-            if (!isEditableStatus) {
-                mFlowLayout.addView(createEditTag(mFlowLayout));
-                setupListener();
-            }
-        } else {
-            int childCount = mFlowLayout.getChildCount();
-            if (isEditableStatus && childCount > 0) {
-                mFlowLayout.removeViewAt(childCount - 1);
-            }
-        }
-        this.isEditableStatus = editable;
     }
     
     private void setupListener() {
@@ -115,7 +105,13 @@ public class EditTag extends FrameLayout {
                         // do nothing, or you can tip "can'nt add empty tag"
                     }
                     else {
-                        mFlowLayout.addView(createTag(mFlowLayout, tagContent),
+                        TextView tagTextView = createTag(mFlowLayout,
+                                                         tagContent);
+                        if (tagTextViewBg == null) {
+                            tagTextViewBg = tagTextView.getBackground();
+                        }
+                        tagTextView.setOnClickListener(EditTag.this);
+                        mFlowLayout.addView(tagTextView,
                                             mFlowLayout.getChildCount() - 1);
                         isHandle = true;
                         mTagList.add(tagContent);
@@ -131,15 +127,27 @@ public class EditTag extends FrameLayout {
             public boolean onKey(View v, int keyCode, KeyEvent event) {
                 boolean isHandle = false;
                 if (keyCode == KeyEvent.KEYCODE_DEL && event.getAction() == KeyEvent.ACTION_DOWN) {
-                    Log.d("delete","deleteAction");
                     String tagContent = mEditText.getText().toString();
                     if (TextUtils.isEmpty(tagContent)) {
-                        // if tags != null,delete last tag
                         int tagCount = mFlowLayout.getChildCount();
-                        if (tagCount > 1) {
-                            mFlowLayout.removeViewAt(tagCount - 2);
-                            mTagList.remove(tagCount - 2);
-                            isHandle = true;
+                        if (lastSelectTagView == null && tagCount > 1) {
+                            if (isDelAction) {
+                                mFlowLayout.removeViewAt(tagCount - 2);
+                                mTagList.remove(tagCount - 2);
+                                isHandle = true;
+                            }
+                            else {
+                                if (tagCount > 1) {
+                                    TextView delActionTagView = (TextView) mFlowLayout.getChildAt(tagCount - 2);
+                                    delActionTagView.setBackgroundDrawable(getDrawablebyResId(deleteModeBgdRes));
+                                    isDelAction = true;
+                                }
+                            }
+                        }
+                        else {
+                            mFlowLayout.removeView(lastSelectTagView);
+                            lastSelectTagView = null;
+                            isDelAction = false;
                         }
                     }
                     else {
@@ -157,10 +165,18 @@ public class EditTag extends FrameLayout {
         int size = mTagList.size();
         for (int i = 0; i < size + 1; i++) {
             if (i == size) {
-                mFlowLayout.addView(createEditTag(mFlowLayout));
+                mEditText = createEditTag(mFlowLayout);
+                mEditText.setTag(new Object());
+                mEditText.setOnClickListener(this);
+                mFlowLayout.addView(mEditText);
             }
             else {
-                mFlowLayout.addView(createTag(mFlowLayout, mTagList.get(i)));
+                TextView tagTextView = createTag(mFlowLayout, mTagList.get(i));
+                if (tagTextViewBg == null) {
+                    tagTextViewBg = tagTextView.getBackground();
+                }
+                tagTextView.setOnClickListener(this);
+                mFlowLayout.addView(tagTextView);
                 isEditableStatus = true;
             }
         }
@@ -183,6 +199,26 @@ public class EditTag extends FrameLayout {
         return mEditText;
     }
     
+    private Drawable getDrawablebyResId(int resId) {
+        return getContext().getResources().getDrawable(resId);
+    }
+    
+    public void setEditable(boolean editable) {
+        if (editable) {
+            if (!isEditableStatus) {
+                mFlowLayout.addView(createEditTag(mFlowLayout));
+                setupListener();
+            }
+        }
+        else {
+            int childCount = mFlowLayout.getChildCount();
+            if (isEditableStatus && childCount > 0) {
+                mFlowLayout.removeViewAt(childCount - 1);
+            }
+        }
+        this.isEditableStatus = editable;
+    }
+    
     public List<String> getTagList() {
         return mTagList;
     }
@@ -191,5 +227,34 @@ public class EditTag extends FrameLayout {
         this.mTagList = mTagList;
         addTagView();
         setupListener();
+    }
+    
+    @Override
+    public void onClick(View view) {
+        if (view.getTag() == null) {
+            // TextView tag click
+            if (lastSelectTagView == null) {
+                lastSelectTagView = view;
+                view.setBackgroundDrawable(getDrawablebyResId(deleteModeBgdRes));
+            }
+            else {
+                if (lastSelectTagView.equals(view)) {
+                    lastSelectTagView.setBackgroundDrawable(tagTextViewBg);
+                    lastSelectTagView = null;
+                }
+                else {
+                    lastSelectTagView.setBackgroundDrawable(tagTextViewBg);
+                    lastSelectTagView = view;
+                    view.setBackgroundDrawable(getDrawablebyResId(deleteModeBgdRes));
+                }
+            }
+        }
+        else {
+            // EditText tag click
+            if (lastSelectTagView != null) {
+                lastSelectTagView.setBackgroundDrawable(tagTextViewBg);
+                lastSelectTagView = null;
+            }
+        }
     }
 }
