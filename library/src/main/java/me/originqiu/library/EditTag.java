@@ -137,11 +137,9 @@ public class EditTag extends FrameLayout implements View.OnClickListener {
                                 isHandle = true;
                             }
                             else {
-                                if (tagCount > 1) {
-                                    TextView delActionTagView = (TextView) mFlowLayout.getChildAt(tagCount - 2);
-                                    delActionTagView.setBackgroundDrawable(getDrawablebyResId(deleteModeBgdRes));
-                                    isDelAction = true;
-                                }
+                                TextView delActionTagView = (TextView) mFlowLayout.getChildAt(tagCount - 2);
+                                delActionTagView.setBackgroundDrawable(getDrawablebyResId(deleteModeBgdRes));
+                                isDelAction = true;
                             }
                         }
                         else {

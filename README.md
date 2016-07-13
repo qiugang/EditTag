@@ -35,7 +35,7 @@
 * Get tag list: ```getTagList()```
 
 ### Todo
- - [ ] Delete single tag out of order
+ - [x] Delete single tag out of order
  - [ ] Tag click event
 
 
