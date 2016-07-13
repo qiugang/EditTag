@@ -25,6 +25,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:tag_layout="@layout/view_sample_tag"
+        app:delete_mode_bg="#FF4081"
         app:input_layout="@layout/view_sample_input_tag"/>
 ```
 
@@ -33,6 +34,7 @@
 * Custom your Tag ,Input EditText layout resource
 * Set  tag list : ```setTagList(List<String> yourTags)```
 * Get tag list: ```getTagList()```
+* Set input tag enable ```setEditable(true)```
 
 ### Todo
  - [x] Delete single tag out of order

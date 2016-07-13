@@ -38,62 +38,70 @@ import java.util.List;
  * Created by OriginQiu on 4/7/16.
  */
 public class EditTag extends FrameLayout implements View.OnClickListener {
-    
+
     private FlowLayout mFlowLayout;
-    
+
     private EditText mEditText;
-    
+
     private int tagViewLayoutRes;
-    
+
     private int inputTagLayoutRes;
-    
-    private int deleteModeBgdRes;
-    
-    private Drawable tagTextViewBg;
-    
+
+    private int deleteModeBgRes;
+
+    private Drawable defaultTagBg;
+
     private boolean isEditableStatus = true;
-    
+
     private View lastSelectTagView;
-    
+
     private List<String> mTagList = new ArrayList<>();
-    
+
     private boolean isDelAction = false;
-    
+
     public EditTag(Context context) {
         this(context, null);
     }
-    
+
     public EditTag(Context context, AttributeSet attrs) {
         this(context, attrs, 0);
     }
-    
+
     public EditTag(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
         TypedArray mTypedArray = context.obtainStyledAttributes(attrs,
-                                                                R.styleable.EditTag);
+                R.styleable.EditTag);
         tagViewLayoutRes = mTypedArray.getResourceId(R.styleable.EditTag_tag_layout,
-                                                     R.layout.view_default_tag);
+                R.layout.view_default_tag);
         inputTagLayoutRes = mTypedArray.getResourceId(R.styleable.EditTag_input_layout,
-                                                      R.layout.view_default_input_tag);
-        deleteModeBgdRes = mTypedArray.getResourceId(R.styleable.EditTag_delete_mode_bg,
-                                                     R.color.colorAccent);
+                R.layout.view_default_input_tag);
+        deleteModeBgRes = mTypedArray.getResourceId(R.styleable.EditTag_delete_mode_bg,
+                R.color.colorAccent);
         mTypedArray.recycle();
         setupView();
     }
-    
+
     private void setupView() {
         mFlowLayout = new FlowLayout(getContext());
         LayoutParams layoutParams = new LayoutParams(LayoutParams.WRAP_CONTENT,
-                                                     LayoutParams.WRAP_CONTENT);
+                LayoutParams.WRAP_CONTENT);
         mFlowLayout.setLayoutParams(layoutParams);
         addView(mFlowLayout);
-        addTagView();
-        setupListener();
+        addInputTagView();
     }
-    
+
+    private void addInputTagView() {
+        mEditText = createInputTag(mFlowLayout);
+        mEditText.setTag(new Object());
+        mEditText.setOnClickListener(this);
+        setupListener();
+        mFlowLayout.addView(mEditText);
+        isEditableStatus = true;
+    }
+
     private void setupListener() {
         mEditText.setOnEditorActionListener(new TextView.OnEditorActionListener() {
-            
+
             @Override
             public boolean onEditorAction(TextView v,
                                           int actionId,
@@ -103,26 +111,29 @@ public class EditTag extends FrameLayout implements View.OnClickListener {
                     String tagContent = mEditText.getText().toString();
                     if (TextUtils.isEmpty(tagContent)) {
                         // do nothing, or you can tip "can'nt add empty tag"
-                    }
-                    else {
+                    } else {
                         TextView tagTextView = createTag(mFlowLayout,
-                                                         tagContent);
-                        if (tagTextViewBg == null) {
-                            tagTextViewBg = tagTextView.getBackground();
+                                tagContent);
+                        if (defaultTagBg == null) {
+                            defaultTagBg = tagTextView.getBackground();
                         }
                         tagTextView.setOnClickListener(EditTag.this);
                         mFlowLayout.addView(tagTextView,
-                                            mFlowLayout.getChildCount() - 1);
-                        isHandle = true;
+                                mFlowLayout.getChildCount() - 1);
                         mTagList.add(tagContent);
+                        // reset action status
                         mEditText.getText().clear();
+                        mEditText.performClick();
+                        isDelAction = false;
+
+                        isHandle = true;
                     }
                 }
                 return isHandle;
             }
         });
         mEditText.setOnKeyListener(new View.OnKeyListener() {
-            
+
             @Override
             public boolean onKey(View v, int keyCode, KeyEvent event) {
                 boolean isHandle = false;
@@ -135,124 +146,116 @@ public class EditTag extends FrameLayout implements View.OnClickListener {
                                 mFlowLayout.removeViewAt(tagCount - 2);
                                 mTagList.remove(tagCount - 2);
                                 isHandle = true;
-                            }
-                            else {
+                            } else {
                                 TextView delActionTagView = (TextView) mFlowLayout.getChildAt(tagCount - 2);
-                                delActionTagView.setBackgroundDrawable(getDrawablebyResId(deleteModeBgdRes));
+                                delActionTagView.setBackgroundDrawable(getDrawableByResId(deleteModeBgRes));
+                                lastSelectTagView = delActionTagView;
                                 isDelAction = true;
                             }
-                        }
-                        else {
+                        } else {
                             mFlowLayout.removeView(lastSelectTagView);
                             lastSelectTagView = null;
                             isDelAction = false;
                         }
-                    }
-                    else {
+                    } else {
                         mEditText.getText().delete(tagContent.length() - 1,
-                                                   tagContent.length());
+                                tagContent.length());
                     }
                 }
                 return isHandle;
             }
         });
     }
-    
-    private void addTagView() {
-        mFlowLayout.removeAllViews();
-        int size = mTagList.size();
-        for (int i = 0; i < size + 1; i++) {
-            if (i == size) {
-                mEditText = createEditTag(mFlowLayout);
-                mEditText.setTag(new Object());
-                mEditText.setOnClickListener(this);
-                mFlowLayout.addView(mEditText);
-            }
-            else {
-                TextView tagTextView = createTag(mFlowLayout, mTagList.get(i));
-                if (tagTextViewBg == null) {
-                    tagTextViewBg = tagTextView.getBackground();
-                }
-                tagTextView.setOnClickListener(this);
-                mFlowLayout.addView(tagTextView);
-                isEditableStatus = true;
-            }
-        }
-    }
-    
+
     private TextView createTag(ViewGroup parent, String s) {
         TextView tagTv = (TextView) LayoutInflater.from(getContext())
-                                                  .inflate(tagViewLayoutRes,
-                                                           parent,
-                                                           false);
+                .inflate(tagViewLayoutRes,
+                        parent,
+                        false);
         tagTv.setText(s);
         return tagTv;
     }
-    
-    private EditText createEditTag(ViewGroup parent) {
+
+    private EditText createInputTag(ViewGroup parent) {
         mEditText = (EditText) LayoutInflater.from(getContext())
-                                             .inflate(inputTagLayoutRes,
-                                                      parent,
-                                                      false);
+                .inflate(inputTagLayoutRes,
+                        parent,
+                        false);
         return mEditText;
     }
-    
-    private Drawable getDrawablebyResId(int resId) {
+
+    private void addTagView() {
+        int size = mTagList.size();
+        for (int i = 0; i < size; i++) {
+            TextView tagTextView = createTag(mFlowLayout, mTagList.get(i));
+            if (defaultTagBg == null) {
+                defaultTagBg = tagTextView.getBackground();
+            }
+            tagTextView.setOnClickListener(this);
+            if (isEditableStatus) {
+                mFlowLayout.addView(tagTextView, mFlowLayout.getChildCount() - 1);
+            } else {
+                mFlowLayout.addView(tagTextView);
+            }
+        }
+    }
+
+    @Override
+    public void onClick(View view) {
+        if (view.getTag() == null && isEditableStatus) {
+            // TextView tag click
+            if (lastSelectTagView == null) {
+                lastSelectTagView = view;
+                view.setBackgroundDrawable(getDrawableByResId(deleteModeBgRes));
+            } else {
+                if (lastSelectTagView.equals(view)) {
+                    lastSelectTagView.setBackgroundDrawable(defaultTagBg);
+                    lastSelectTagView = null;
+                } else {
+                    lastSelectTagView.setBackgroundDrawable(defaultTagBg);
+                    lastSelectTagView = view;
+                    view.setBackgroundDrawable(getDrawableByResId(deleteModeBgRes));
+                }
+            }
+        } else {
+            // EditText tag click
+            if (lastSelectTagView != null) {
+                lastSelectTagView.setBackgroundDrawable(defaultTagBg);
+                lastSelectTagView = null;
+            }
+        }
+    }
+
+    private Drawable getDrawableByResId(int resId) {
         return getContext().getResources().getDrawable(resId);
     }
-    
+
+
     public void setEditable(boolean editable) {
         if (editable) {
             if (!isEditableStatus) {
-                mFlowLayout.addView(createEditTag(mFlowLayout));
-                setupListener();
+                mFlowLayout.addView((mEditText));
             }
-        }
-        else {
+        } else {
             int childCount = mFlowLayout.getChildCount();
             if (isEditableStatus && childCount > 0) {
                 mFlowLayout.removeViewAt(childCount - 1);
+                if (lastSelectTagView != null) {
+                    lastSelectTagView.setBackgroundDrawable(defaultTagBg);
+                    isDelAction = false;
+                    mEditText.getText().clear();
+                }
             }
         }
         this.isEditableStatus = editable;
     }
-    
+
     public List<String> getTagList() {
         return mTagList;
     }
-    
+
     public void setTagList(List<String> mTagList) {
         this.mTagList = mTagList;
         addTagView();
-        setupListener();
-    }
-    
-    @Override
-    public void onClick(View view) {
-        if (view.getTag() == null) {
-            // TextView tag click
-            if (lastSelectTagView == null) {
-                lastSelectTagView = view;
-                view.setBackgroundDrawable(getDrawablebyResId(deleteModeBgdRes));
-            }
-            else {
-                if (lastSelectTagView.equals(view)) {
-                    lastSelectTagView.setBackgroundDrawable(tagTextViewBg);
-                    lastSelectTagView = null;
-                }
-                else {
-                    lastSelectTagView.setBackgroundDrawable(tagTextViewBg);
-                    lastSelectTagView = view;
-                    view.setBackgroundDrawable(getDrawablebyResId(deleteModeBgdRes));
-                }
-            }
-        }
-        else {
-            // EditText tag click
-            if (lastSelectTagView != null) {
-                lastSelectTagView.setBackgroundDrawable(tagTextViewBg);
-                lastSelectTagView = null;
-            }
-        }
     }
 }
