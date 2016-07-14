@@ -1,5 +1,6 @@
 # EditTag
 [![](https://jitpack.io/v/qiugang/EditTag.svg)](https://jitpack.io/#qiugang/EditTag)
+[![Android Arsenal](https://img.shields.io/badge/Android%20Arsenal-EditTag-green.svg?style=true)](https://android-arsenal.com/details/1/3907)
  Just use it to edit tags like EditText edit text.
 ### Demo
 <img src="/screenshots/s01.jpg" width="360" height="640" />
