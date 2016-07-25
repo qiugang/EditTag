@@ -22,6 +22,7 @@ import android.content.res.TypedArray;
 import android.graphics.drawable.Drawable;
 import android.text.TextUtils;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -53,7 +54,7 @@ public class EditTag extends FrameLayout implements View.OnClickListener {
 
     private boolean isEditableStatus = true;
 
-    private View lastSelectTagView;
+    private TextView lastSelectTagView;
 
     private List<String> mTagList = new ArrayList<>();
 
@@ -153,9 +154,7 @@ public class EditTag extends FrameLayout implements View.OnClickListener {
                                 isDelAction = true;
                             }
                         } else {
-                            mFlowLayout.removeView(lastSelectTagView);
-                            lastSelectTagView = null;
-                            isDelAction = false;
+                            removeSelectedTag();
                         }
                     } else {
                         mEditText.getText().delete(tagContent.length() - 1,
@@ -165,6 +164,20 @@ public class EditTag extends FrameLayout implements View.OnClickListener {
                 return isHandle;
             }
         });
+    }
+
+    private void removeSelectedTag() {
+        mFlowLayout.removeView(lastSelectTagView);
+        int size = mTagList.size();
+        String delTagContent = lastSelectTagView.getText().toString();
+        for (int i = 0; i < size; i++) {
+            if (delTagContent.equals(mTagList.get(i))) {
+                mTagList.remove(i);
+                break;
+            }
+        }
+        lastSelectTagView = null;
+        isDelAction = false;
     }
 
     private TextView createTag(ViewGroup parent, String s) {
@@ -205,7 +218,7 @@ public class EditTag extends FrameLayout implements View.OnClickListener {
         if (view.getTag() == null && isEditableStatus) {
             // TextView tag click
             if (lastSelectTagView == null) {
-                lastSelectTagView = view;
+                lastSelectTagView = (TextView) view;
                 view.setBackgroundDrawable(getDrawableByResId(deleteModeBgRes));
             } else {
                 if (lastSelectTagView.equals(view)) {
@@ -213,7 +226,7 @@ public class EditTag extends FrameLayout implements View.OnClickListener {
                     lastSelectTagView = null;
                 } else {
                     lastSelectTagView.setBackgroundDrawable(defaultTagBg);
-                    lastSelectTagView = view;
+                    lastSelectTagView = (TextView) view;
                     view.setBackgroundDrawable(getDrawableByResId(deleteModeBgRes));
                 }
             }
@@ -254,9 +267,10 @@ public class EditTag extends FrameLayout implements View.OnClickListener {
         return mTagList;
     }
 
-    public void addTag(String tagContent) {
+    public boolean addTag(String tagContent) {
         if (TextUtils.isEmpty(tagContent)) {
             // do nothing, or you can tip "can'nt add empty tag"
+            return false;
         } else {
             TextView tagTextView = createTag(mFlowLayout,
                     tagContent);
@@ -271,6 +285,7 @@ public class EditTag extends FrameLayout implements View.OnClickListener {
             mEditText.getText().clear();
             mEditText.performClick();
             isDelAction = false;
+            return true;
         }
     }
 
