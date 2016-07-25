@@ -36,6 +36,7 @@
 * Set  tag list : ```setTagList(List<String> yourTags)```
 * Get tag list: ```getTagList()```
 * Set input tag enable ```setEditable(true)```
+* Add a tag ```addTag(String tagContent)```
 
 ### Todo
  - [x] Delete single tag out of order

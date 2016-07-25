@@ -31,6 +31,8 @@ public class MainActivity extends AppCompatActivity implements SwitchCompat.OnCh
             tagStrings.add("test" + i);
         }
         editTagView.setTagList(tagStrings);
+
+        editTagView.addTag("hello world!");
     }
 
     @Override

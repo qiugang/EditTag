@@ -254,6 +254,26 @@ public class EditTag extends FrameLayout implements View.OnClickListener {
         return mTagList;
     }
 
+    public void addTag(String tagContent) {
+        if (TextUtils.isEmpty(tagContent)) {
+            // do nothing, or you can tip "can'nt add empty tag"
+        } else {
+            TextView tagTextView = createTag(mFlowLayout,
+                    tagContent);
+            if (defaultTagBg == null) {
+                defaultTagBg = tagTextView.getBackground();
+            }
+            tagTextView.setOnClickListener(EditTag.this);
+            mFlowLayout.addView(tagTextView,
+                    mFlowLayout.getChildCount() - 1);
+            mTagList.add(tagContent);
+            // reset action status
+            mEditText.getText().clear();
+            mEditText.performClick();
+            isDelAction = false;
+        }
+    }
+
     public void setTagList(List<String> mTagList) {
         this.mTagList = mTagList;
         addTagView();
