@@ -4,39 +4,37 @@
  Just use it to edit tags like EditText edit text.
 ### Demo
 <img src="/screenshots/s01.jpg" width="360" height="640" />
-### Step 1
+### How to use
 
 * Add the dependency
 
 ```groovy
-
  repositories {
-        maven { url "https://jitpack.io" }
+     maven { url "https://jitpack.io" }
  }
  dependencies {
-	    compile 'com.github.qiugang:EditTag:v1.1'
+	 compile 'com.github.qiugang:EditTag:v1.1'
  }
 ```
 * Add EditTag View in your layout resource
 
 ```xml
-
- <me.originqiu.library.EditTag
-        android:id="@+id/edit_tag_view"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        app:tag_layout="@layout/view_sample_tag"
-        app:delete_mode_bg="#FF4081"
-        app:input_layout="@layout/view_sample_input_tag"/>
+<me.originqiu.library.EditTag
+     android:id="@+id/edit_tag_view"
+     android:layout_width="match_parent"
+     android:layout_height="wrap_content"
+     app:tag_layout="@layout/view_sample_tag"
+     app:delete_mode_bg="#FF4081"
+     app:input_layout="@layout/view_sample_input_tag"/>
 ```
 
-### Step 2
 
 * Custom your Tag ,Input EditText layout resource
 * Set  tag list : ```setTagList(List<String> yourTags)```
 * Get tag list: ```getTagList()```
 * Set input tag enable ```setEditable(true)```
 * Add a tag ```addTag(String tagContent)```
+* ⚠ When you custom input_layout layout, please use ```MEditText``` replaced ```EditText```, in order to avoid some of the soft keyboard can not receive the delete action event
 
 ### Todo
  - [x] Delete single tag out of order
