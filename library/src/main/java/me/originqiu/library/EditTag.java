@@ -20,14 +20,14 @@ package me.originqiu.library;
 import android.content.Context;
 import android.content.res.TypedArray;
 import android.graphics.drawable.Drawable;
+import android.text.Editable;
 import android.text.TextUtils;
+import android.text.TextWatcher;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.inputmethod.EditorInfo;
 import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.TextView;
@@ -101,38 +101,53 @@ public class EditTag extends FrameLayout implements View.OnClickListener {
     }
 
     private void setupListener() {
-        mEditText.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+        mEditText.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
 
             @Override
-            public boolean onEditorAction(TextView v,
-                                          int actionId,
-                                          KeyEvent event) {
-                boolean isHandle = false;
-                if (actionId == EditorInfo.IME_ACTION_DONE) {
-                    String tagContent = mEditText.getText().toString();
-                    if (TextUtils.isEmpty(tagContent)) {
-                        // do nothing, or you can tip "can'nt add empty tag"
-                    } else {
-                        TextView tagTextView = createTag(mFlowLayout,
-                                tagContent);
-                        if (defaultTagBg == null) {
-                            defaultTagBg = tagTextView.getBackground();
-                        }
-                        tagTextView.setOnClickListener(EditTag.this);
-                        mFlowLayout.addView(tagTextView,
-                                mFlowLayout.getChildCount() - 1);
-                        mTagList.add(tagContent);
-                        // reset action status
-                        mEditText.getText().clear();
-                        mEditText.performClick();
-                        isDelAction = false;
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
 
-                        isHandle = true;
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+
+                String str = s.toString();
+
+                if (str != null && !str.isEmpty()) {
+
+                    String substring = str.substring(str.length() - 1, str.length());
+
+                    if (substring.equals(" ")) {
+
+                        String tagContent = mEditText.getText().toString();
+                        if (TextUtils.isEmpty(tagContent)) {
+                            // do nothing, or you can tip "can'nt add empty tag"
+                        } else {
+                            TextView tagTextView = createTag(mFlowLayout,
+                                    tagContent);
+                            if (defaultTagBg == null) {
+                                defaultTagBg = tagTextView.getBackground();
+                            }
+                            tagTextView.setOnClickListener(EditTag.this);
+                            mFlowLayout.addView(tagTextView,
+                                    mFlowLayout.getChildCount() - 1);
+                            mTagList.add(tagContent);
+                            // reset action status
+                            mEditText.getText().clear();
+                            mEditText.performClick();
+                            isDelAction = false;
+                        }
+
                     }
                 }
-                return isHandle;
+
             }
         });
+
         mEditText.setOnKeyListener(new View.OnKeyListener() {
 
             @Override
@@ -169,15 +184,17 @@ public class EditTag extends FrameLayout implements View.OnClickListener {
     private void removeSelectedTag() {
         mFlowLayout.removeView(lastSelectTagView);
         int size = mTagList.size();
-        String delTagContent = lastSelectTagView.getText().toString();
-        for (int i = 0; i < size; i++) {
-            if (delTagContent.equals(mTagList.get(i))) {
-                mTagList.remove(i);
-                break;
+        if (lastSelectTagView != null) {
+            String delTagContent = lastSelectTagView.getText().toString();
+            for (int i = 0; i < size; i++) {
+                if (delTagContent != null && delTagContent.equals(mTagList.get(i))) {
+                    mTagList.remove(i);
+                    break;
+                }
             }
+            lastSelectTagView = null;
+            isDelAction = false;
         }
-        lastSelectTagView = null;
-        isDelAction = false;
     }
 
     private TextView createTag(ViewGroup parent, String s) {
