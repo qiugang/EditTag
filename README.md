@@ -14,7 +14,7 @@
      maven { url "https://jitpack.io" }
  }
  dependencies {
-	 compile 'com.github.qiugang:EditTag:{latest version}'
+	 compile 'com.github.rafaeltakiyama:EditTag:v1.2.3'
  }
 ```
 * Add EditTag View in your layout resource
