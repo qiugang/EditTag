@@ -169,11 +169,13 @@ public class EditTag extends FrameLayout implements View.OnClickListener {
     private void removeSelectedTag() {
         mFlowLayout.removeView(lastSelectTagView);
         int size = mTagList.size();
-        String delTagContent = lastSelectTagView.getText().toString();
-        for (int i = 0; i < size; i++) {
-            if (delTagContent.equals(mTagList.get(i))) {
-                mTagList.remove(i);
-                break;
+        if (size > 0) {
+            String delTagContent = lastSelectTagView.getText().toString();
+            for (int i = 0; i < size; i++) {
+                if (delTagContent.equals(mTagList.get(i))) {
+                    mTagList.remove(i);
+                    break;
+                }
             }
         }
         lastSelectTagView = null;
