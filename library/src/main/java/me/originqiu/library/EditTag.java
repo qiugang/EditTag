@@ -161,6 +161,20 @@ public class EditTag extends FrameLayout implements View.OnClickListener {
                                 tagContent.length());
                     }
                 }
+                /** Custom code to add tags with physical and soft keyboards, by AlejandroHCruz **/
+                if ((event.getAction() == KeyEvent.ACTION_UP) &&
+                        ((keyCode == KeyEvent.KEYCODE_COMMA) ||
+                                (keyCode == KeyEvent.KEYCODE_SPACE) ||
+                                (keyCode == KeyEvent.KEYCODE_ENTER))) {
+
+                    String newTag = String.valueOf(mEditText.getText());
+
+                    if (!newTag.equals(",$,$") && !newTag.equals("\n") && !newTag.equals("\r") && !newTag.equals(" ") && !newTag.equals(",$")) {
+                        newTag = newTag.replaceAll(",$", "").replaceAll("\n", "").replaceAll("\r", "").replaceAll(" ", "");
+                        addTag(newTag);
+                        isHandle = true;
+                    }
+                }
                 return isHandle;
             }
         });
