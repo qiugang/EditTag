@@ -37,4 +37,5 @@
         android:checked="true"
         android:padding="16dp"
         android:text="open editable status" />
+
 </LinearLayout>
