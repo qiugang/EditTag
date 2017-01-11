@@ -34,8 +34,8 @@ public class MainActivity extends AppCompatActivity
         for (int i = 0; i < 10; i++) {
             tagStrings.add("test" + i);
         }
-        //Set tag callback before set tag list
-        editTagView.setTagAddCallBack(new EditTag.TagAddCallBack() {
+        //Set tag add callback before set tag list
+        editTagView.setTagAddCallBack(new EditTag.TagAddCallback() {
             @Override
             public boolean onTagAdd(String tagValue) {
                 if ("test1".equals(tagValue)) {

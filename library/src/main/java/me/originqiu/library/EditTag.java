@@ -64,11 +64,11 @@ public class EditTag extends FrameLayout
 
     private boolean isDelAction = false;
 
-    private TagAddCallBack tagAddCallBack;
+    private TagAddCallback tagAddCallBack;
 
     private TagDeletedCallback tagDeletedCallback;
 
-    public interface TagAddCallBack {
+    public interface TagAddCallback {
         /*
          * Called when add a tag
          * true: tag would be added
@@ -310,7 +310,7 @@ public class EditTag extends FrameLayout
         return tagValueList;
     }
 
-    public void setTagAddCallBack(TagAddCallBack tagAddCallBack) {
+    public void setTagAddCallBack(TagAddCallback tagAddCallBack) {
         this.tagAddCallBack = tagAddCallBack;
     }
 
