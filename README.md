@@ -22,12 +22,12 @@
 
 ```xml
 <me.originqiu.library.EditTag
-     android:id="@+id/edit_tag_view"
-     android:layout_width="match_parent"
-     android:layout_height="wrap_content"
-     app:tag_layout="@layout/view_sample_tag"
-     app:delete_mode_bg="#FF4081"
-     app:input_layout="@layout/view_sample_input_tag"/>
+   android:id="@+id/edit_tag_view"
+   android:layout_width="match_parent"
+   android:layout_height="wrap_content"
+   app:tag_layout="@layout/view_sample_tag"
+   app:delete_mode_bg="#FF4081"
+   app:input_layout="@layout/view_sample_input_tag"/>
 ```
 
 
