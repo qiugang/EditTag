@@ -2,6 +2,7 @@
 [![](https://jitpack.io/v/qiugang/EditTag.svg)](https://jitpack.io/#qiugang/EditTag)
 [![Android Arsenal](https://img.shields.io/badge/Android%20Arsenal-EditTag-green.svg?style=true)](https://android-arsenal.com/details/1/3907)
 [![Codewake](https://www.codewake.com/badges/ask_question.svg)](https://www.codewake.com/p/edittag)
+
  Just use it to edit tags like EditText edit text.
 ### Demo
 <img src="/screenshots/s01.jpg" width="360" height="640" />
@@ -35,11 +36,12 @@
 * Get tag list: ```getTagList()```
 * Set input tag enable ```setEditable(true)```
 * Add a tag ```addTag(String tagContent)```
+* Remove tag: ```removeTag(String... tagValue)```
+* Set Tag data changed callback: ```setTagAddCallBack(TagAddCallback tagAddCallBack)``` and ```setTagDeletedCallback(TagDeletedCallback tagDeletedCallback)```
 * ⚠ When you custom input_layout layout, please use ```MEditText``` replaced ```EditText```, in order to avoid some of the soft keyboard can not receive the delete action event
 
 ### Todo
  - [x] Delete single tag out of order
- - [ ] Tag click event
 
 
 ### Thanks
@@ -48,25 +50,25 @@
 ###License
     The MIT License (MIT)
 
-        Copyright (c) 2015 OriginQiu
+    Copyright (c) 2015 OriginQiu
 
-        Permission is hereby granted, free of charge, to any person obtaining a copy
-        of this software and associated documentation files (the "Software"), to deal
-        in the Software without restriction, including without limitation the rights
-        to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-        copies of the Software, and to permit persons to whom the Software is
-        furnished to do so, subject to the following conditions:
+    Permission is hereby granted, free of charge, to any person obtaining a copy
+    of this software and associated documentation files (the "Software"), to deal
+    in the Software without restriction, including without limitation the rights
+    to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+    copies of the Software, and to permit persons to whom the Software is
+    furnished to do so, subject to the following conditions:
 
-        The above copyright notice and this permission notice shall be included in all
-        copies or substantial portions of the Software.
+    The above copyright notice and this permission notice shall be included in all
+    copies or substantial portions of the Software.
 
-        THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-        IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-        FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-        AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-        LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-        OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-        SOFTWARE.
+    THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+    IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+    FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+    AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+    LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+    OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+    SOFTWARE.
 
 
 
