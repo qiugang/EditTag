@@ -16,7 +16,7 @@ Just use it to edit tags like EditText edit text.
      maven { url "https://jitpack.io" }
  }
  dependencies {
-	 compile 'com.github.qiugang:EditTag:{latest version}'
+     compile 'com.github.qiugang:EditTag:{latest version}'
  }
 ```
 * Add EditTag View in your layout resource
