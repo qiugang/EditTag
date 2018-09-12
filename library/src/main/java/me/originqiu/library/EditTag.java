@@ -68,6 +68,8 @@ public class EditTag extends FrameLayout
 
     private TagDeletedCallback tagDeletedCallback;
 
+    private TagClickCallBack tagClickCallBack;
+
     public interface TagAddCallback {
         /*
          * Called when add a tag
@@ -84,6 +86,15 @@ public class EditTag extends FrameLayout
          * @param deletedTagValue
          */
         void onTagDelete(String deletedTagValue);
+    }
+
+    public interface TagClickCallBack {
+
+        /**
+         * Called when tag is clicked
+         * @param tagValue the tag value to be send to listeners.
+         */
+        void onTagClick(String tagValue);
     }
 
     public EditTag(Context context) {
@@ -192,6 +203,11 @@ public class EditTag extends FrameLayout
 
     @Override
     public void onClick(View view) {
+
+        if(view instanceof TextView && view.getTag(R.id.TV_TAG_ID) != null && tagClickCallBack != null) {
+            tagClickCallBack.onTagClick(((TextView)view).getText().toString());
+        }
+
         if (view.getTag() == null && isEditableStatus) {
             // TextView tag click
             if (lastSelectTagView == null) {
@@ -285,6 +301,7 @@ public class EditTag extends FrameLayout
                     defaultTagBg = tagTextView.getBackground();
                 }
                 tagTextView.setOnClickListener(EditTag.this);
+                tagTextView.setTag(R.id.TV_TAG_ID,tagContent);
                 if (isEditableStatus) {
                     flowLayout.addView(tagTextView, flowLayout.getChildCount() - 1);
                 } else {
@@ -316,6 +333,10 @@ public class EditTag extends FrameLayout
 
     public void setTagDeletedCallback(TagDeletedCallback tagDeletedCallback) {
         this.tagDeletedCallback = tagDeletedCallback;
+    }
+
+    public void setTagClickCallback(TagClickCallBack tagClickCallback) {
+        this.tagClickCallBack = tagClickCallback;
     }
 
     /*
