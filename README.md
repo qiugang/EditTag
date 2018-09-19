@@ -38,7 +38,7 @@ Just use it to edit tags like EditText edit text.
 * Set input tag enable ```setEditable(true)```
 * Add a tag ```addTag(String tagContent)```
 * Remove tag: ```removeTag(String... tagValue)```
-* Set Tag data changed callback: ```setTagAddCallBack(TagAddCallback tagAddCallBack)``` and ```setTagDeletedCallback(TagDeletedCallback tagDeletedCallback)```
+* Set Tag data changed callback: ```setTagAddCallBack(TagAddCallback tagAddCallBack)```, ```setTagDeletedCallback(TagDeletedCallback tagDeletedCallback)```, and  ```setTagClickCallback(TagClickCallBack tagClickCallback)```
 * ⚠ When you custom input_layout layout, please use ```MEditText``` replaced ```EditText```, in order to avoid some of the soft keyboard can not receive the delete action event
 
 ### Todo
