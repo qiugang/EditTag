@@ -4,5 +4,6 @@
         <attr name="tag_layout" format="reference"></attr>
         <attr name="input_layout" format="reference"></attr>
         <attr name="delete_mode_bg" format="reference"></attr>
+        <attr name="add_tag_after_space_input" format="boolean"></attr>
     </declare-styleable>
 </resources>
