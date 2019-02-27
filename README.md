@@ -24,6 +24,7 @@
      android:id="@+id/edit_tag_view"
      android:layout_width="match_parent"
      android:layout_height="wrap_content"
+     app:add_tag_after_space_input="true"
      app:tag_layout="@layout/view_sample_tag"
      app:delete_mode_bg="#FF4081"
      app:input_layout="@layout/view_sample_input_tag"/>
@@ -35,6 +36,7 @@
 * Get tag list: ```getTagList()```
 * Set input tag enable ```setEditable(true)```
 * Add a tag ```addTag(String tagContent)```
+* Enable add tag after entering space ```setShouldAddTagAfterSpace(Boolean shouldAddTagAfterSpace)```
 * ⚠ When you custom input_layout layout, please use ```MEditText``` replaced ```EditText```, in order to avoid some of the soft keyboard can not receive the delete action event
 
 ### Todo

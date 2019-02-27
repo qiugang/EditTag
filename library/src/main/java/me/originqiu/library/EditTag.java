@@ -20,10 +20,10 @@ package me.originqiu.library;
 import android.content.Context;
 import android.content.res.TypedArray;
 import android.graphics.drawable.Drawable;
-import android.support.v7.widget.AppCompatTextView;
+import android.text.Editable;
 import android.text.TextUtils;
+import android.text.TextWatcher;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -35,14 +35,13 @@ import android.widget.TextView;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.List;
 
 /**
  * Created by OriginQiu on 4/7/16.
  */
 public class EditTag extends FrameLayout
-        implements View.OnClickListener, TextView.OnEditorActionListener, View.OnKeyListener {
+        implements View.OnClickListener, TextView.OnEditorActionListener, View.OnKeyListener, TextWatcher {
 
     private FlowLayout flowLayout;
 
@@ -53,6 +52,8 @@ public class EditTag extends FrameLayout
     private int inputTagLayoutRes;
 
     private int deleteModeBgRes;
+
+    private boolean shouldAddTagAfterSpace;
 
     private Drawable defaultTagBg;
 
@@ -103,6 +104,7 @@ public class EditTag extends FrameLayout
                 R.layout.view_default_input_tag);
         deleteModeBgRes =
                 mTypedArray.getResourceId(R.styleable.EditTag_delete_mode_bg, R.color.colorAccent);
+        shouldAddTagAfterSpace = mTypedArray.getBoolean(R.styleable.EditTag_add_tag_after_space_input, false);
         mTypedArray.recycle();
         setupView();
     }
@@ -128,6 +130,7 @@ public class EditTag extends FrameLayout
     private void setupListener() {
         editText.setOnEditorActionListener(this);
         editText.setOnKeyListener(this);
+        editText.addTextChangedListener(this);
     }
 
     @Override
@@ -166,26 +169,7 @@ public class EditTag extends FrameLayout
     public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
         boolean isHandle = false;
         if (actionId == EditorInfo.IME_ACTION_DONE) {
-            String tagContent = editText.getText().toString();
-            if (TextUtils.isEmpty(tagContent)) {
-                // do nothing, or you can tip "can'nt add empty tag"
-            } else {
-                if (tagAddCallBack == null || (tagAddCallBack != null
-                        && tagAddCallBack.onTagAdd(tagContent))) {
-                    TextView tagTextView = createTag(flowLayout, tagContent);
-                    if (defaultTagBg == null) {
-                        defaultTagBg = tagTextView.getBackground();
-                    }
-                    tagTextView.setOnClickListener(EditTag.this);
-                    flowLayout.addView(tagTextView, flowLayout.getChildCount() - 1);
-                    tagValueList.add(tagContent);
-                    // reset action status
-                    editText.getText().clear();
-                    editText.performClick();
-                    isDelAction = false;
-                    isHandle = true;
-                }
-            }
+            isHandle = handleTextToTag();
         }
         return isHandle;
     }
@@ -214,6 +198,50 @@ public class EditTag extends FrameLayout
                 lastSelectTagView = null;
             }
         }
+    }
+
+    @Override
+    public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+        // Do nothing
+    }
+
+    @Override
+    public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+        // Do nothing
+    }
+
+    @Override
+    public void afterTextChanged(Editable editable) {
+        String inputText = editable.toString();
+        if (shouldAddTagAfterSpace && inputText.contains(" ") && inputText.trim().length() > 0) {
+            handleTextToTag();
+        }
+    }
+
+    private boolean handleTextToTag() {
+        String tagContent = editText.getText().toString();
+        if (TextUtils.isEmpty(tagContent)) {
+            // do nothing, or you can tip "can'nt add empty tag"
+            return false;
+        } else {
+            tagContent = tagContent.trim();
+            if (tagAddCallBack == null || (tagAddCallBack != null
+                    && tagAddCallBack.onTagAdd(tagContent))) {
+                TextView tagTextView = createTag(flowLayout, tagContent);
+                if (defaultTagBg == null) {
+                    defaultTagBg = tagTextView.getBackground();
+                }
+                tagTextView.setOnClickListener(EditTag.this);
+                flowLayout.addView(tagTextView, flowLayout.getChildCount() - 1);
+                tagValueList.add(tagContent);
+                // reset action status
+                editText.getText().clear();
+                editText.performClick();
+                isDelAction = false;
+                return true;
+            }
+        }
+        return false;
     }
 
     private void removeSelectedTag() {
@@ -346,5 +374,9 @@ public class EditTag extends FrameLayout
                 }
             }
         }
+    }
+
+    public void setShouldAddTagAfterSpace(boolean shouldAddTagAfterSpace) {
+        this.shouldAddTagAfterSpace = shouldAddTagAfterSpace;
     }
 }
